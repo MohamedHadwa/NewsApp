@@ -26,13 +26,6 @@ struct Article: Codable {
 
 // MARK: - Source
 struct Source: Codable {
-    var id: ID?
+    var id: String?
     var name: String?
-}
-
-enum ID: String, Codable {
-    case businessInsider = "business-insider"
-    case engadget = "engadget"
-    case googleNews = "google-news"
-    case wired = "wired"
 }

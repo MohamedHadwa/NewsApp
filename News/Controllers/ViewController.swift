@@ -19,7 +19,7 @@ class ViewController: UIViewController {
     
     // MARK: - Private Variables.
     var news : [Article]?
-    var filterNews : [Article]?
+    var filterNews : [Article] = []
     let searchController = UISearchController(searchResultsController: nil)
 
     // MARK: - View Lifecycle
@@ -31,10 +31,13 @@ class ViewController: UIViewController {
         homeTabelView.dataSource = self
         homeTabelView.register(HomeTableViewCell.nib(), forCellReuseIdentifier: "HomeTableViewCell")
         navigationItem.searchController = searchController
-        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.obscuresBackgroundDuringPresentation = true
         searchController.searchBar.placeholder = "Search in Articles"
         searchController.searchResultsUpdater = self
-
+        self.homeTabelView.rowHeight = UITableView.automaticDimension
+        self.homeTabelView.estimatedRowHeight = 500
+        
+        
         getData()
       
     }
@@ -43,12 +46,11 @@ class ViewController: UIViewController {
     
     // MARK: - Private Functions.
     func getData(){
-          let url = URL(string: "https://newsapi.org/v2/everything?q=bitcoin&apiKey=c70a81257c66498db733959fc4c3fb09")!
+          let url = URL(string: "https://newsapi.org/v2/everything?q=everything&apiKey=c70a81257c66498db733959fc4c3fb09")!
         AF.request(url , method: .get , encoding: JSONEncoding.default).responseDecodable(of: HomeNews.self) { (response) in
             guard let data = response.data else {return}
             let res = try? JSONDecoder().decode(HomeNews.self, from: data)
             self.news = res?.articles ?? [Article()]
-            print(res)
         
                 self.homeTabelView.reloadData()
             
@@ -62,22 +64,41 @@ class ViewController: UIViewController {
 
 extension ViewController :UITableViewDelegate , UITableViewDataSource  ,UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
-        
+        filterNews = news?.filter({ (new) ->Bool in
+            return new.title? .lowercased().contains(searchController.searchBar.text!.lowercased()) ?? true
+        }) ?? [Article()]
+        homeTabelView.reloadData()
+
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return news?.count ?? 10
+        return searchController.isActive ? filterNews.count : news?.count ?? 0
         
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "HomeTableViewCell", for: indexPath) as! HomeTableViewCell
-        cell.getData(with:news?[indexPath.row] ?? Article())
+        cell.getData(with: searchController.isActive ? filterNews[indexPath.row] : news?[indexPath.row] ?? Article())
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 500
+        return homeTabelView.estimatedRowHeight
     }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let vc = storyboard?.instantiateViewController(withIdentifier: "details") as! DetailsViewController
+
+        vc.newsDetailes = searchController.isActive ? filterNews[indexPath.row] : news?[indexPath.row]
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+       
+        let faviorateAction = UIContextualAction(style: .destructive, title: "Fav") { _, _, _ in
+            print ("this user is Fav \(self.news?[indexPath.row])")
+        }
+        return UISwipeActionsConfiguration(actions: [ faviorateAction])
+
+    }
+
     
     
     
