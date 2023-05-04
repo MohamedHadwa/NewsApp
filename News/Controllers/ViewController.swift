@@ -11,8 +11,6 @@ import Alamofire
 
 class ViewController: UIViewController {
 
-
-    
     // MARK: - IBOutlets.
     
     @IBOutlet weak var homeTabelView: UITableView!
@@ -22,6 +20,8 @@ class ViewController: UIViewController {
     var filterNews : [Article] = []
     let searchController = UISearchController(searchResultsController: nil)
 
+    
+    
     // MARK: - View Lifecycle
     
     override func viewDidLoad() {
@@ -31,11 +31,10 @@ class ViewController: UIViewController {
         homeTabelView.dataSource = self
         homeTabelView.register(HomeTableViewCell.nib(), forCellReuseIdentifier: "HomeTableViewCell")
         navigationItem.searchController = searchController
-        searchController.obscuresBackgroundDuringPresentation = true
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.placeholder = "Search in Articles"
         searchController.searchResultsUpdater = self
-        self.homeTabelView.rowHeight = UITableView.automaticDimension
-        self.homeTabelView.estimatedRowHeight = 500
+        homeTabelView.rowHeight = UITableView.automaticDimension
         getData()
        
       
@@ -81,7 +80,8 @@ extension ViewController :UITableViewDelegate , UITableViewDataSource  ,UISearch
         return cell
     }
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return homeTabelView.estimatedRowHeight
+        
+        return UITableView.automaticDimension
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let vc = storyboard?.instantiateViewController(withIdentifier: "details") as! DetailsViewController
