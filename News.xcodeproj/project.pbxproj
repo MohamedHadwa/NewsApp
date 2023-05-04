@@ -125,8 +125,8 @@
 		D9DD82C929FEA5EE00DBD5D3 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				D9DD82C229FE803000DBD5D3 /* HomeTableViewCell.swift */,
 				D9DD82AE29FE7C3900DBD5D3 /* Main.storyboard */,
+				D9DD82C229FE803000DBD5D3 /* HomeTableViewCell.swift */,
 				D9956B232A0286D600E2A372 /* DetailsViewController.swift */,
 				D9183A2529FEA65F00841A62 /* HomeTableViewCell.xib */,
 			);

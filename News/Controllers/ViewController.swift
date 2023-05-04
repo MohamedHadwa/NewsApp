@@ -36,9 +36,8 @@ class ViewController: UIViewController {
         searchController.searchResultsUpdater = self
         self.homeTabelView.rowHeight = UITableView.automaticDimension
         self.homeTabelView.estimatedRowHeight = 500
-        
-        
         getData()
+       
       
     }
     // MARK: - IBActions.
@@ -60,7 +59,7 @@ class ViewController: UIViewController {
     
 }
 
-// MARK: - <#UI.....#> Delegate & DataSource.
+// MARK: - ViewController Delegate & DataSource.
 
 extension ViewController :UITableViewDelegate , UITableViewDataSource  ,UISearchResultsUpdating{
     func updateSearchResults(for searchController: UISearchController) {
@@ -90,17 +89,20 @@ extension ViewController :UITableViewDelegate , UITableViewDataSource  ,UISearch
         vc.newsDetailes = searchController.isActive ? filterNews[indexPath.row] : news?[indexPath.row]
         navigationController?.pushViewController(vc, animated: true)
     }
-    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-       
-        let faviorateAction = UIContextualAction(style: .destructive, title: "Fav") { _, _, _ in
-            print ("this user is Fav \(self.news?[indexPath.row])")
-        }
-        return UISwipeActionsConfiguration(actions: [ faviorateAction])
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        
+                let faviorateAction = UIContextualAction(style: .destructive, title: "Fav") { _, _, _ in
+                   print ("this user is Fav \(self.news?[indexPath.row])")
+              
 
+                }
+                return UISwipeActionsConfiguration(actions: [ faviorateAction])
+        
+        
+     
+        
+        
     }
-
-    
-    
     
 }
 
